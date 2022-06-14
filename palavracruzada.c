@@ -20,7 +20,8 @@ typedef struct{
 }Word;
 
 int main(int argc, char* argv[]){
-    Word words[2];
+    int n=2;
+    Word words[n];
     char input[100];
     int cont=0;
     while(true){
@@ -57,24 +58,60 @@ int main(int argc, char* argv[]){
         printf("A pergunta eh: %s\nA resposta eh: %s\nO tamanho eh: %d\nA orientacao eh: %d\n",words[i].question,words[i].word,words[i].size,words[i].orientation);
     }
 
-    for(int i=0;i<2;i++){
-        for(int j=0;j<2;j++){
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
             if(j!=i && words[j].stat){
                 for(int k=0;k<words[i].size;k++){
                     for(int l=0;l<words[j].size;l++){
                         if(words[i].word[k]==words[j].word[l]){
                             if(!words[i].orientation){
                               words[i].i+=l;
-                              words[j].i+=k;
-                              words[j].j+=l;
-                              printf("pos 1 x %d y %d. pos 2 x %d y %d",words[i].i,words[i].j,words[j].i,words[j].j);
+                              words[j].i+=l;
+                              words[j].j+=k;
+                              words[j].stat=false;
+                              printf("pos 1 x %d y %d. pos 2 x %d y %d\n",words[i].i,words[i].j,words[j].i,words[j].j);
+                              break;
                             }
                         }
                     }
+                    if(!words[j].stat)break;
                 }
             }
         }
     }
+    char m[50][50];
+    for(int i=0;i<10;i++){
+        for(int j=0;j<10;j++){
+            m[i][j]='.';
+        }
+    }
+
+    for(int i=0;i<n;i++){
+        for(int j=0;j<words[i].size;j++){
+            if(words[i].orientation)
+                m[j+words[i].i][words[i].j]=words[i].word[j];
+            else m[words[i].i][j+words[i].j]=words[i].word[j];
+        }
+    }
+    for(int i=0;i<10;i++){
+        for(int j=0;j<10;j++){
+            printf("%c ",m[i][j]);
+        }
+        printf("\n");
+    }
 
     return 0;
 }
+/*
+1
+cader
+horizontal
+2
+elo
+vertical
+3
+dvc
+vertical
+
+
+*/
