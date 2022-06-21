@@ -1,4 +1,4 @@
-// Projeto 1
+// Projeto 2
 // Eduardo Barros Guimarães
 // Nº USP 13679040
 
@@ -20,7 +20,7 @@ typedef struct{
 }Word;
 
 int main(int argc, char* argv[]){
-    int n=2;
+    int n=3;
     Word words[n];
     char input[100];
     int cont=0;
@@ -29,8 +29,8 @@ int main(int argc, char* argv[]){
         gets(input);
         if(!strcmp(input,"fim"))break;
         words[cont].stat=true;
-        words[cont].i=0;
-        words[cont].j=0;
+        //words[cont].i=0;
+        //words[cont].j=0;
         strcpy(words[cont].question, input);
         printf("Digite a palavra %d: ",cont+1);
         gets(input);
@@ -48,16 +48,20 @@ int main(int argc, char* argv[]){
                 pos=true;
                 break;
             }
-            else printf("Posicao errada, digite novamente: ");
+            else printf("Orientacao errada, digite novamente: ");
         }
 
         words[cont].orientation=pos;
+        printf("Digite a posicao da palavra %d: ",cont+1);
+        scanf("%d %d",&words[cont].i,&words[cont].j);
+        static char temp[256];
+        fgets(temp, sizeof(temp), stdin);
         cont++;
     }
     for(int i=0;i<1;i++){
         printf("A pergunta eh: %s\nA resposta eh: %s\nO tamanho eh: %d\nA orientacao eh: %d\n",words[i].question,words[i].word,words[i].size,words[i].orientation);
     }
-
+/*
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
             if(j!=i && words[j].stat){
@@ -78,10 +82,20 @@ int main(int argc, char* argv[]){
                 }
             }
         }
+    }*/
+    int COL=INT_MIN,LIN=INT_MIN;
+    for(int i=0;i<n;i++){
+        if(words[i].orientation){
+            int a=words[i].size+words[i].i;
+            if(a>LIN)LIN=a;
+        } else {
+            int a=words[i].size+words[i].j;
+            if(a>COL)COL=a;
+        }
     }
-    char m[50][50];
-    for(int i=0;i<10;i++){
-        for(int j=0;j<10;j++){
+    char m[LIN][COL];
+    for(int i=0;i<LIN;i++){
+        for(int j=0;j<COL;j++){
             m[i][j]='.';
         }
     }
@@ -93,8 +107,8 @@ int main(int argc, char* argv[]){
             else m[words[i].i][j+words[i].j]=words[i].word[j];
         }
     }
-    for(int i=0;i<10;i++){
-        for(int j=0;j<10;j++){
+    for(int i=0;i<LIN;i++){
+        for(int j=0;j<COL;j++){
             printf("%c ",m[i][j]);
         }
         printf("\n");
@@ -103,15 +117,18 @@ int main(int argc, char* argv[]){
     return 0;
 }
 /*
-1
-cader
+Voce senta
+cadeira
 horizontal
-2
-elo
+2 0
+Quando chora
+lagrima
 vertical
-3
-dvc
+1 1
+Onde cai
+chao
 vertical
-
+0 6
+fim
 
 */
