@@ -1,0 +1,110 @@
+```c
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    char* value;
+    bool is_vertical;
+    bool unused;
+} word;
+/*
+
+| | |x| |
+| | | | |
+| | | | |
+
+*/
+bool fits_int_table(char** table, int table_size, word* curr_word) {
+    int i, j;
+    i = j = 1;
+    int word_size = strlen(curr_word->value);
+    for (int i = 0; i < word_size; i++) {
+        for (int j = 0; j < word_size; j++) {
+            int k = 0;
+            int temp_i, temp_j;
+
+            temp_i = i;
+            temp_j = j;
+
+            for (; k < word_size; k++) {
+                if (table[temp_i][temp_j] != '\0' || table[temp_i][temp_j] != curr_word->value[k]) {
+                    break;
+                } else {
+                    if (curr_word->is_vertical) {
+                        temp_j = temp_j + 1;
+                        if (temp_j >= word_size) break;
+                    } else {
+                        temp_i = temp_i + 1;
+                        if (temp_i >= word_size) break;
+                    }
+                }
+            }
+
+            if (k == word_size) {
+                curr_word->unused = false;
+
+                for (int w = 0; w < word_size; w++) {
+                    if (curr_word->is_vertical) {
+                        table[i][j] = curr_word->value[w];
+                        j++;
+                    } else {
+                        table[i][j] = curr_word->value[w];
+                        i++;
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+int build_table(char** table, int table_size, word word_list[]) {
+    for (int i = 0; i < 8; i++) {
+        if (word_list[i].unused) {
+            fits_int_table(table, table_size, &word_list[i]);
+        }
+    }
+}
+int build_table(char** table, int table_size, word word_list[], int curr_word_number, int number_of_words) {
+    if(curr_word_number == number_of_words) {
+        return 1;
+    }
+    fits_int_table(table, table_size, &word_list[curr_word_number]);
+    return build_table(table, table_size, word_list, curr_word_number + 1);
+}
+
+int main() {
+    word word_list[] = {
+        {"teste", false, true},
+        {"linux", true, true},
+        {"editor", false, true},
+        {"brasil", true, true},
+        {"testando", true, true},
+        {"hoje", true, true},
+        {"vomito", false, true},
+        {"lixo", false, true}};
+
+    int sum = 0;
+    for (int i = 0; i < 8; i++)
+        sum += strlen(word_list[i].value);
+
+    char** table = malloc(sizeof(char*) * sum);
+    for (int i = 0; i < sum; i++)
+        table[i] = (void *) calloc(sizeof(char), sum);
+
+    build_table(table, sum, word_list);
+
+    for (int i = 0; i < sum; i++) {
+        for (int j = 0; j < sum; j++) {
+            printf("%c ", table[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+```
